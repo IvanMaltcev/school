@@ -10,7 +10,7 @@ public interface CrudeService<T, G> {
 
     T update(T t);
 
-    T delete(Long id);
+    void delete(Long id);
 
     Collection<T> getFilter(G param);
 
