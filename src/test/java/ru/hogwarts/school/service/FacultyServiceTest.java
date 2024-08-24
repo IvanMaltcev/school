@@ -21,23 +21,21 @@ public class FacultyServiceTest {
 
     @Mock
     private FacultyRepository facultyRepositoryMock;
-    private CrudeService<Faculty, String> out;
+    private FacultyService out;
 
     private Faculty faculty1;
     private Faculty faculty2;
     private Faculty faculty3;
-    private Faculty faculty4;
 
 
     @BeforeEach
     public void setUp() {
 
-        out = new FacultyService(facultyRepositoryMock);
+        out = new FacultyServiceImp(facultyRepositoryMock);
 
         faculty1 = new Faculty(1L, "Blacks", "black");
         faculty2 = new Faculty(2L, "Reds", "red");
         faculty3 = new Faculty(3L, "Greys", "black");
-        faculty4 = new Faculty(4L, "Greens", "green");
 
 
     }
@@ -82,21 +80,37 @@ public class FacultyServiceTest {
     }
 
     @Test
-    public void getFilter() {
+    public void findFacultyByName() {
 
-        when(facultyRepositoryMock.findAll()).thenReturn(List.of(
-                faculty1,
-                faculty2,
-                faculty3,
-                faculty4
-        ));
+        when(facultyRepositoryMock.findFacultyByColorIgnoreCaseOrNameIgnoreCase(null, "Reds"))
+                .thenReturn(List.of(
+                        faculty2
+                ));
+
+        Collection<Faculty> expected = new ArrayList<>();
+
+        expected.add(faculty2);
+
+        Collection<Faculty> actual = out.findFacultyByParameter(null, "Reds");
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void findFacultyByColor() {
+
+        when(facultyRepositoryMock.findFacultyByColorIgnoreCaseOrNameIgnoreCase("black", null))
+                .thenReturn(List.of(
+                        faculty1,
+                        faculty3
+                ));
 
         Collection<Faculty> expected = new ArrayList<>();
 
         expected.add(faculty1);
         expected.add(faculty3);
 
-        Collection<Faculty> actual = out.getFilter("black");
+        Collection<Faculty> actual = out.findFacultyByParameter("black", null);
 
         assertEquals(expected, actual);
     }

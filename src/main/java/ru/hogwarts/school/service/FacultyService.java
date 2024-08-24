@@ -1,48 +1,20 @@
 package ru.hogwarts.school.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import ru.hogwarts.school.model.Faculty;
-import ru.hogwarts.school.repository.FacultyRepository;
+import ru.hogwarts.school.model.Student;
 
 import java.util.Collection;
-import java.util.Optional;
 
-@Service
-public class FacultyService implements CrudeService<Faculty, String> {
+public interface FacultyService {
+    Faculty create(Faculty faculty);
 
-    @Autowired
-    private final FacultyRepository facultyRepository;
+    Faculty getById(Long id);
 
-    public FacultyService(FacultyRepository facultyRepository) {
-        this.facultyRepository = facultyRepository;
-    }
+    Faculty update(Faculty faculty);
 
-    @Override
-    public Faculty create(Faculty faculty) {
-        return facultyRepository.save(faculty);
-    }
+    void delete(Long id);
 
-    @Override
-    public Faculty getById(Long facultyId) {
-        Optional<Faculty> findStudent = facultyRepository.findById(facultyId);
-        return findStudent.orElse(null);
-    }
+    Collection<Faculty> findFacultyByParameter(String color, String name);
 
-    @Override
-    public Faculty update(Faculty faculty) {
-        return facultyRepository.save(faculty);
-    }
-
-    @Override
-    public void delete(Long facultyId) {
-        facultyRepository.deleteById(facultyId);
-    }
-
-    @Override
-    public Collection<Faculty> getFilter(String color) {
-        return facultyRepository.findAll().stream()
-                .filter(faculty -> faculty.getColor().equals(color))
-                .toList();
-    }
+    Collection<Student> getListOfFacultyStudents(Long facultyId);
 }

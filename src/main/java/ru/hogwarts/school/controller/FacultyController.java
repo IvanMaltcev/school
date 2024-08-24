@@ -3,7 +3,8 @@ package ru.hogwarts.school.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.hogwarts.school.model.Faculty;
-import ru.hogwarts.school.service.CrudeService;
+import ru.hogwarts.school.model.Student;
+import ru.hogwarts.school.service.FacultyService;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -12,9 +13,9 @@ import java.util.Collections;
 @RequestMapping("/faculties")
 public class FacultyController {
 
-    private final CrudeService<Faculty, String> facultyService;
+    private final FacultyService facultyService;
 
-    public FacultyController(CrudeService<Faculty, String> facultyService) {
+    public FacultyController(FacultyService facultyService) {
         this.facultyService = facultyService;
     }
 
@@ -49,10 +50,22 @@ public class FacultyController {
     }
 
     @GetMapping
-    public ResponseEntity<Collection<Faculty>> getFacultyByColor(@RequestParam("color") String color) {
-        if (color != null && !color.isBlank()) {
-            return ResponseEntity.ok(Collections.unmodifiableCollection(facultyService.getFilter(color)));
+    public ResponseEntity<Collection<Faculty>> getFacultyByColor(@RequestParam(required = false) String color,
+                                                                 @RequestParam(required = false) String name) {
+
+        if (color != null && !color.isBlank() || name != null && !name.isBlank()) {
+            return ResponseEntity.ok(Collections.unmodifiableCollection(
+                    facultyService.findFacultyByParameter(color, name)));
         }
         return ResponseEntity.ok(Collections.emptyList());
+    }
+
+    @GetMapping("/students")
+    public ResponseEntity<Collection<Student>> getListOfFacultyStudents(@RequestParam Long facultyId) {
+        Collection<Student> students = facultyService.getListOfFacultyStudents(facultyId);
+        if (students.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(students);
     }
 }

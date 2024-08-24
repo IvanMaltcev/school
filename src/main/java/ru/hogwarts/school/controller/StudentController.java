@@ -2,8 +2,9 @@ package ru.hogwarts.school.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
-import ru.hogwarts.school.service.CrudeService;
+import ru.hogwarts.school.service.StudentService;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -12,9 +13,9 @@ import java.util.Collections;
 @RequestMapping("students")
 public class StudentController {
 
-    private final CrudeService<Student, Integer> studentService;
+    private final StudentService studentService;
 
-    public StudentController(CrudeService<Student, Integer> studentService) {
+    public StudentController(StudentService studentService) {
         this.studentService = studentService;
     }
 
@@ -49,10 +50,26 @@ public class StudentController {
     }
 
     @GetMapping
-    public ResponseEntity<Collection<Student>> getStudentsByAge(@RequestParam("age") int age) {
-        if (age > 0) {
+    public ResponseEntity<Collection<Student>> getStudentsByAge(@RequestParam(required = false) Integer age,
+                                                                @RequestParam(required = false) Integer min,
+                                                                @RequestParam(required = false) Integer max) {
+        if (!(age == null || age <= 0)) {
             return ResponseEntity.ok(Collections.unmodifiableCollection(studentService.getFilter(age)));
+        }
+        if (min > 0 && max > 0 && max > min) {
+            return ResponseEntity.ok(Collections.unmodifiableCollection(
+                    studentService.findByParameters(min, max)));
         }
         return ResponseEntity.ok(Collections.emptyList());
     }
+
+    @GetMapping("/faculty")
+    public ResponseEntity<Faculty> getStudentFaculty(@RequestParam Long studentId) {
+        Faculty studentFaculty = studentService.getStudentFaculty(studentId);
+        if (studentFaculty == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(studentFaculty);
+    }
+
 }

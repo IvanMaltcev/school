@@ -21,7 +21,7 @@ public class StudentServiceTest {
 
     @Mock
     private StudentRepository studentRepositoryMock;
-    private CrudeService<Student, Integer> out;
+    private StudentService out;
 
     private Student student1;
     private Student student2;
@@ -31,7 +31,7 @@ public class StudentServiceTest {
     @BeforeEach
     public void setUp() {
 
-        out = new StudentService(studentRepositoryMock);
+        out = new StudentServiceImp(studentRepositoryMock);
 
         student1 = new Student(1L, "Mikel", 25);
         student2 = new Student(2L, "Jack", 25);
