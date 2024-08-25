@@ -1,48 +1,23 @@
 package ru.hogwarts.school.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
-import ru.hogwarts.school.repository.StudentRepository;
 
 import java.util.Collection;
-import java.util.Optional;
 
-@Service
-public class StudentService implements CrudeService<Student, Integer> {
+public interface StudentService {
 
-    @Autowired
-    private final StudentRepository studentRepository;
+    Student create(Student t);
 
-    public StudentService(StudentRepository studentRepository) {
-        this.studentRepository = studentRepository;
-    }
+    Student getById(Long id);
 
-    @Override
-    public Student create(Student student) {
-        return studentRepository.save(student);
-    }
+    Student update(Student t);
 
-    @Override
-    public Student getById(Long studentId) {
-        Optional<Student> findStudent = studentRepository.findById(studentId);
-        return findStudent.orElse(null);
-    }
+    void delete(Long id);
 
-    @Override
-    public Student update(Student student) {
-        return studentRepository.save(student);
-    }
+    Collection<Student> getFilter(Integer age);
 
-    @Override
-    public void delete(Long studentId) {
-        studentRepository.deleteById(studentId);
-    }
+    Collection<Student> findByParameters(Integer min, Integer max);
 
-    @Override
-    public Collection<Student> getFilter(Integer age) {
-        return studentRepository.findAll().stream()
-                .filter(student -> student.getAge() == age)
-                .toList();
-    }
+    Faculty getStudentFaculty(Long studentId);
 }

@@ -1,15 +1,16 @@
 package ru.hogwarts.school.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.*;
+import lombok.*;
 
-@Entity
-@Data
+import java.util.Set;
+
+@Getter
+@Setter
+@ToString
+@EqualsAndHashCode
 @NoArgsConstructor(force = true)
+@Entity
 public class Faculty {
 
     @Id
@@ -18,9 +19,13 @@ public class Faculty {
     private final String name;
     private final String color;
 
+    @OneToMany(mappedBy = "faculty")
+    private Set<Student> students;
+
     public Faculty(Long id, String name, String color) {
         this.id = id;
         this.name = name;
         this.color = color;
     }
+
 }
