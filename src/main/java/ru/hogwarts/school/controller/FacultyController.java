@@ -44,14 +44,14 @@ public class FacultyController {
     }
 
     @DeleteMapping("{facultyId}")
-    public ResponseEntity<Faculty> deleteFaculty(@PathVariable Long facultyId) {
+    public void deleteFaculty(@PathVariable Long facultyId) {
         facultyService.delete(facultyId);
-        return ResponseEntity.ok().build();
+        ResponseEntity.ok().build();
     }
 
     @GetMapping
-    public ResponseEntity<Collection<Faculty>> getFacultyByColor(@RequestParam(required = false) String color,
-                                                                 @RequestParam(required = false) String name) {
+    public ResponseEntity<Collection<Faculty>> getFacultyByColorOrName(@RequestParam(required = false) String color,
+                                                                       @RequestParam(required = false) String name) {
 
         if (color != null && !color.isBlank() || name != null && !name.isBlank()) {
             return ResponseEntity.ok(Collections.unmodifiableCollection(

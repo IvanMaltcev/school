@@ -16,8 +16,8 @@ public class Faculty {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private final String name;
-    private final String color;
+    private String name;
+    private String color;
 
     @OneToMany(mappedBy = "faculty")
     private Set<Student> students;

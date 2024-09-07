@@ -14,8 +14,8 @@ public class Student {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private final String name;
-    private final int age;
+    private String name;
+    private int age;
 
     @ManyToOne
     @JoinColumn(name = "faculty_id")
