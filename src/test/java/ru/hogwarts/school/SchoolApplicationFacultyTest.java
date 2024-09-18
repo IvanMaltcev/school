@@ -55,7 +55,7 @@ public class SchoolApplicationFacultyTest {
 
     @AfterEach
     void deleteObjectForTests() {
-        facultyController.deleteFaculty(facultyId);
+        facultyRepository.deleteById(facultyId);
     }
 
     @Test
@@ -65,7 +65,7 @@ public class SchoolApplicationFacultyTest {
         Faculty expected = new Faculty(id, "Math", "black");
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(expected, response.getBody());
-        facultyController.deleteFaculty(id);
+        facultyRepository.deleteById(id);
     }
 
     @Test

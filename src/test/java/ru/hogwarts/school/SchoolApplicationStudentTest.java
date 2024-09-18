@@ -51,7 +51,7 @@ public class SchoolApplicationStudentTest {
 
     @AfterEach
     void deleteObjectForTests() {
-        studentController.deleteStudent(studentId);
+        studentRepository.deleteById(studentId);
     }
 
     @Test
@@ -61,7 +61,7 @@ public class SchoolApplicationStudentTest {
         Student expected = new Student(id, "Tom", 21);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(expected, response.getBody());
-        studentController.deleteStudent(id);
+        studentRepository.deleteById(id);
     }
 
     @Test
