@@ -60,4 +60,19 @@ public class StudentServiceImp implements StudentService {
         return getById(studentId).getFaculty();
     }
 
+    @Override
+    public Integer getAmountAllStudents() {
+        return studentRepository.getAmountAllStudents();
+    }
+
+    @Override
+    public Double getAverageAgeStudents() {
+        return studentRepository.getAverageAgeStudents();
+    }
+
+    @Override
+    public Collection<Student> getLastFiveStudents() {
+        return studentRepository.getLastFiveStudents();
+    }
+
 }

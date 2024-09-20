@@ -1,6 +1,5 @@
 package ru.hogwarts.school;
 
-
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -192,4 +191,51 @@ public class SchoolApplicationStudentMockTest {
 
     }
 
+    @Test
+    public void getAmountAllStudentsTest() throws Exception {
+
+        when(studentRepository.getAmountAllStudents()).thenReturn(1);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/students/amount")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").value(1));
+    }
+
+    @Test
+    public void getAverageAgeStudentsTest() throws Exception {
+
+        when(studentRepository.getAverageAgeStudents()).thenReturn(21.0);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/students/average-age")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").value(21.0));
+
+    }
+
+    @Test
+    public void getLastFiveStudentsTest() throws Exception {
+        JSONObject studentObject = new JSONObject();
+        studentObject.put("name", name);
+        studentObject.put("age", age);
+
+        when(studentRepository.getLastFiveStudents()).thenReturn(List.of(
+                student
+        ));
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/students/last-five-students")
+                        .content(studentObject.toString())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id").value(id))
+                .andExpect(jsonPath("$[0].name").value(name))
+                .andExpect(jsonPath("$[0].age").value(age));
+    }
 }
