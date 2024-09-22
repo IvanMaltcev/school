@@ -20,4 +20,10 @@ public interface StudentService {
     Collection<Student> findByParameters(Integer min, Integer max);
 
     Faculty getStudentFaculty(Long studentId);
+
+    Integer getAmountAllStudents();
+
+    Double getAverageAgeStudents();
+
+    Collection<Student> getLastFiveStudents();
 }
