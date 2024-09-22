@@ -5,9 +5,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import ru.hogwarts.school.dto.AvatarDto;
 import ru.hogwarts.school.model.Avatar;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.AvatarRepository;
+import ru.hogwarts.school.utils.MappingUtils;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -26,11 +28,14 @@ public class AvatarServiceImp implements AvatarService {
     private String avatarsDir;
 
     private final StudentService studentService;
+
+    private final MappingUtils mappingUtils;
     private final AvatarRepository avatarRepository;
 
-    public AvatarServiceImp(StudentService studentService, AvatarRepository avatarRepository) {
+    public AvatarServiceImp(StudentService studentService, AvatarRepository avatarRepository, MappingUtils mappingUtils) {
         this.studentService = studentService;
         this.avatarRepository = avatarRepository;
+        this.mappingUtils = mappingUtils;
     }
 
     @Override
@@ -68,9 +73,13 @@ public class AvatarServiceImp implements AvatarService {
     }
 
     @Override
-    public List<Avatar> getListOfAvatars(Integer page, Integer size) {
+    public List<AvatarDto> getListOfAvatars(Integer page, Integer size) {
         PageRequest pageRequest = PageRequest.of(page - 1, size);
-        return avatarRepository.findAll(pageRequest).getContent();
+        return avatarRepository.findAll(pageRequest)
+                .getContent()
+                .stream()
+                .map(mappingUtils::mapToAvatarDto)
+                .toList();
     }
 
     private byte[] generateData(Path filePath) throws IOException {
