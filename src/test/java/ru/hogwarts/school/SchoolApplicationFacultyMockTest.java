@@ -18,7 +18,9 @@ import ru.hogwarts.school.repository.FacultyRepository;
 import ru.hogwarts.school.repository.StudentRepository;
 import ru.hogwarts.school.service.AvatarServiceImp;
 import ru.hogwarts.school.service.FacultyServiceImp;
+import ru.hogwarts.school.service.InfoService;
 import ru.hogwarts.school.service.StudentServiceImp;
+import ru.hogwarts.school.utils.MappingUtils;
 
 import java.util.Collections;
 import java.util.List;
@@ -53,6 +55,12 @@ public class SchoolApplicationFacultyMockTest {
 
     @SpyBean
     private AvatarServiceImp avatarService;
+
+    @SpyBean
+    private MappingUtils mappingUtils;
+
+    @SpyBean
+    private InfoService infoService;
 
     @InjectMocks
     private StudentController studentController;
