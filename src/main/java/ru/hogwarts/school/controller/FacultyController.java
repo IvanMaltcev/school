@@ -51,7 +51,7 @@ public class FacultyController {
 
     @GetMapping
     public ResponseEntity<Collection<Faculty>> getFacultyByColorOrName(@RequestParam(required = false) String color,
-                                                                 @RequestParam(required = false) String name) {
+                                                                       @RequestParam(required = false) String name) {
 
         if (color != null && !color.isBlank() || name != null && !name.isBlank()) {
             return ResponseEntity.ok(Collections.unmodifiableCollection(
@@ -67,5 +67,10 @@ public class FacultyController {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(students);
+    }
+
+    @GetMapping("/longest-faculty-name")
+    public String getLongestFacultyName() {
+        return facultyService.getLongestFacultyName();
     }
 }

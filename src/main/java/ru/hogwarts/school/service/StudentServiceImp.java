@@ -4,13 +4,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.hogwarts.school.exception.EmptyListException;
 import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.StudentRepository;
 
-import java.util.Collection;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 @Service
 public class StudentServiceImp implements StudentService {
@@ -95,4 +96,40 @@ public class StudentServiceImp implements StudentService {
         return studentRepository.getLastFiveStudents();
     }
 
+    @Override
+    public List<String> getListOfStudentNames() {
+        logger.info("Was invoked method for get list of names students starting with the letter A");
+        return studentRepository.findAll().stream()
+                .map(Student::getName)
+                .filter(s -> s.startsWith("A"))
+                .toList();
+    }
+
+    @Override
+    public Double getAverageAgeAllStudents() {
+        logger.info("Was invoked method for get average age of all students");
+        return studentRepository.findAll().stream()
+                .map(Student::getAge)
+                .mapToDouble(age -> age)
+                .average()
+                .orElseThrow(() -> new EmptyListException("List of students is empty!"));
+    }
+
+    @Override
+    public void calculateValue() {
+        long startTime1 = System.currentTimeMillis();
+        int sum1 = Stream.iterate(1, a -> a + 1)
+                .limit(1_000_000)
+                .reduce(0, (a, b) -> a + b);
+        long workingTime1 = System.currentTimeMillis() - startTime1;
+        logger.info("Working time method - {} \n Result: {}", workingTime1, sum1);
+
+        long startTime2 = System.currentTimeMillis();
+        int sum2 = IntStream.iterate(1, a -> a + 1)
+                .limit(1_000_000)
+                .reduce(0, Integer::sum);
+        long workingTime2 = System.currentTimeMillis() - startTime2;
+        logger.info("Working time method - {} \n Result: {}", workingTime2, sum2);
+
+    }
 }
