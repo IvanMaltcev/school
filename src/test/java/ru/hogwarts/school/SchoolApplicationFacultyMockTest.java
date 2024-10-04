@@ -205,4 +205,16 @@ public class SchoolApplicationFacultyMockTest {
                 .andExpect(status().isNotFound());
 
     }
+
+    @Test
+    public void getLongestFacultyNameTest() throws Exception {
+        when(facultyRepository.findAll()).thenReturn(List.of(faculty));
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/faculties/longest-faculty-name")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").value("Math"));
+    }
 }

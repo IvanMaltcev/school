@@ -5,15 +5,14 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import ru.hogwarts.school.exception.EmptyListException;
 import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.repository.FacultyRepository;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -113,5 +112,30 @@ public class FacultyServiceTest {
         Collection<Faculty> actual = out.findFacultyByParameter("black", null);
 
         assertEquals(expected, actual);
+    }
+
+    @Test
+    public void getLongestFacultyNameTest() {
+
+        when(facultyRepositoryMock.findAll()).thenReturn(List.of(
+                faculty1,
+                faculty2,
+                faculty3
+        ));
+
+        String actual = out.getLongestFacultyName();
+        assertEquals("Blacks", actual);
+    }
+
+    @Test
+    public void getLongestFacultyNameWhenListFacultiesEmpty() {
+
+        when(facultyRepositoryMock.findAll()).thenReturn(Collections.emptyList());
+
+        Exception exception = assertThrows(EmptyListException.class,
+                () -> out.getLongestFacultyName());
+
+        assertEquals("List of faculties is empty!", exception.getMessage());
+
     }
 }

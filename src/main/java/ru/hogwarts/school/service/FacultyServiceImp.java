@@ -4,13 +4,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.hogwarts.school.exception.EmptyListException;
 import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.FacultyRepository;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class FacultyServiceImp implements FacultyService {
@@ -66,5 +65,14 @@ public class FacultyServiceImp implements FacultyService {
             return Collections.emptyList();
         }
         return getById(facultyId).getStudents();
+    }
+
+    @Override
+    public String getLongestFacultyName() {
+        logger.info("Was invoked method for get the longest faculty name");
+        return facultyRepository.findAll().stream()
+                .map(Faculty::getName)
+                .max(Comparator.comparing(String::length))
+                .orElseThrow(() -> new EmptyListException("List of faculties is empty!"));
     }
 }

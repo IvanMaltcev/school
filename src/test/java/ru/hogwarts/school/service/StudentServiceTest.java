@@ -5,15 +5,14 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import ru.hogwarts.school.exception.EmptyListException;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.StudentRepository;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -35,7 +34,7 @@ public class StudentServiceTest {
 
         student1 = new Student(1L, "Mikel", 25);
         student2 = new Student(2L, "Jack", 25);
-        student3 = new Student(3L, "Mary", 23);
+        student3 = new Student(3L, "Ann", 23);
 
     }
 
@@ -96,6 +95,54 @@ public class StudentServiceTest {
         Collection<Student> actual = out.getFilter(25);
 
         assertEquals(expected, actual);
+    }
+
+    @Test
+    public void getListOfStudentNames() {
+
+        when(studentRepositoryMock.findAll()).thenReturn(List.of(
+                student1,
+                student2,
+                student3
+        ));
+
+        List<String> actual = out.getListOfStudentNames();
+
+        List<String> expected = new ArrayList<>();
+        expected.add(student3.getName());
+
+        assertEquals(expected, actual);
+
+    }
+
+
+    @Test
+    public void getAverageAgeAllStudents() {
+
+        when(studentRepositoryMock.findAll()).thenReturn(List.of(
+                student1,
+                student2,
+                student3
+        ));
+
+        double actual = out.getAverageAgeAllStudents();
+
+        double expected = (double) (student1.getAge() + student2.getAge() + student3.getAge()) / 3;
+
+        assertEquals(expected, actual);
+
+    }
+
+    @Test
+    public void getAverageAgeAllStudentsWhenListStudentsEmpty() {
+
+        when(studentRepositoryMock.findAll()).thenReturn(Collections.emptyList());
+
+        Exception exception = assertThrows(EmptyListException.class,
+                () -> out.getAverageAgeAllStudents());
+
+        assertEquals("List of students is empty!", exception.getMessage());
+
     }
 
 }

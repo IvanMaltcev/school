@@ -54,6 +54,9 @@ public class SchoolApplicationStudentMockTest {
     @SpyBean
     private MappingUtils mappingUtils;
 
+    @SpyBean
+    private InfoService infoService;
+
     @InjectMocks
     private StudentController studentController;
 
@@ -65,7 +68,7 @@ public class SchoolApplicationStudentMockTest {
     @BeforeEach
     void init() {
         id = 1L;
-        name = "Tom";
+        name = "Ann";
         age = 21;
         student = new Student();
         student.setId(id);
@@ -241,5 +244,35 @@ public class SchoolApplicationStudentMockTest {
                 .andExpect(jsonPath("$[0].id").value(id))
                 .andExpect(jsonPath("$[0].name").value(name))
                 .andExpect(jsonPath("$[0].age").value(age));
+    }
+
+    @Test
+    public void getListOfStudentNamesTest() throws Exception {
+
+        when(studentRepository.findAll()).thenReturn(List.of(
+                student
+        ));
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/students/list-name-started-A")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").value("Ann"));
+    }
+
+    @Test
+    public void getAverageAgeAllStudents() throws Exception {
+
+        when(studentRepository.findAll()).thenReturn(List.of(
+                student
+        ));
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/students/average-age-students")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").value(21.0));
     }
 }
