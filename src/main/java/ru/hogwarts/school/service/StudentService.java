@@ -32,5 +32,9 @@ public interface StudentService {
 
     Double getAverageAgeAllStudents();
 
+    void getStudentsNamesParallel();
+
+    void getStudentsNamesSynchronized();
+
     void calculateValue();
 }

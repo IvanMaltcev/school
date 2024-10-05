@@ -116,6 +116,59 @@ public class StudentServiceImp implements StudentService {
     }
 
     @Override
+    public void getStudentsNamesParallel() {
+        logger.info("Was invoked method for get student's names parallel");
+        List<String> namesStudents = studentRepository.findAll().stream()
+                .map(Student::getName)
+                .toList();
+
+        new Thread(() -> {
+            printNameParallel(namesStudents.get(2));
+            printNameParallel(namesStudents.get(3));
+        }).start();
+
+        new Thread(() -> {
+            printNameParallel(namesStudents.get(4));
+            printNameParallel(namesStudents.get(5));
+        }).start();
+
+        printNameParallel(namesStudents.get(0));
+        printNameParallel(namesStudents.get(1));
+    }
+
+
+    @Override
+    public void getStudentsNamesSynchronized() {
+        logger.info("Was invoked method for get student's names synchronized");
+        List<String> namesStudents = studentRepository.findAll().stream()
+                .map(Student::getName)
+                .toList();
+
+        new Thread(() -> {
+            printNameSynchronized(namesStudents.get(2));
+            printNameSynchronized(namesStudents.get(3));
+        }).start();
+
+        new Thread(() -> {
+            printNameSynchronized(namesStudents.get(4));
+            printNameSynchronized(namesStudents.get(5));
+        }).start();
+
+        printNameSynchronized(namesStudents.get(0));
+        printNameSynchronized(namesStudents.get(1));
+    }
+
+    private void printNameParallel(String name) {
+        System.out.println(name);
+    }
+
+    private void printNameSynchronized(String name) {
+        synchronized (StudentServiceImp.class) {
+            System.out.println(name);
+        }
+    }
+
+    @Override
     public void calculateValue() {
         long startTime1 = System.currentTimeMillis();
         int sum1 = Stream.iterate(1, a -> a + 1)
